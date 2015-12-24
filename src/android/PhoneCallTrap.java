@@ -95,7 +95,7 @@ class CallStateListener extends PhoneStateListener {
 		break;
         }
 	
-		Log.i("SHAH","The message is XXXXXXX  " + msg);
+	
 		
 		try {
                 JSONObject parameter = new JSONObject();
