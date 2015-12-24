@@ -3,6 +3,9 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
            id="io.gvox.plugin.phonecalltrap"
       version="0.1.1">
+             <engines>
+        <engine name="cordova" version="&gt;=3.0.0" />
+    </engines>
     <name>PhoneCallTrap</name>
     <description>A phone call trap</description>
     <license>MIT</license>
