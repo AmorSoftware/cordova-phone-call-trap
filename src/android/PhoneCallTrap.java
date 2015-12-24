@@ -1,4 +1,4 @@
-package io.gvox.phonecalltrap;
+package amor.phonecalltrap;
 
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
@@ -9,6 +9,32 @@ import android.telephony.TelephonyManager;
 
 import org.json.JSONException;
 import org.json.JSONArray;
+import org.json.JSONObject;
+
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.os.Bundle;
+
+
+
+import android.content.IntentFilter;
+
+import android.util.Log;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
+
+
+
+
 
 
 public class PhoneCallTrap extends CordovaPlugin {
@@ -17,11 +43,12 @@ public class PhoneCallTrap extends CordovaPlugin {
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         prepareListener();
-
         listener.setCallbackContext(callbackContext);
 
         return true;
     }
+
+
 
     private void prepareListener() {
         if (listener == null) {
@@ -32,6 +59,10 @@ public class PhoneCallTrap extends CordovaPlugin {
     }
 }
 
+ 
+
+
+
 class CallStateListener extends PhoneStateListener {
 
     private CallbackContext callbackContext;
@@ -41,7 +72,8 @@ class CallStateListener extends PhoneStateListener {
     }
 
     public void onCallStateChanged(int state, String incomingNumber) {
-        super.onCallStateChanged(state, incomingNumber);
+        
+		super.onCallStateChanged(state, incomingNumber);
 
         if (callbackContext == null) return;
 
@@ -49,21 +81,40 @@ class CallStateListener extends PhoneStateListener {
 
         switch (state) {
             case TelephonyManager.CALL_STATE_IDLE:
-            msg = "IDLE";
+			msg = "IDLE";
+			
             break;
 
             case TelephonyManager.CALL_STATE_OFFHOOK:
-            msg = "OFFHOOK";
+		   msg = "OFFHOOK";
+			
             break;
 
             case TelephonyManager.CALL_STATE_RINGING:
-            msg = "RINGING";
-            break;
+			msg = "RINGING";
+		break;
         }
+	
+		Log.i("SHAH","The message is XXXXXXX  " + msg);
+		
+		try {
+                JSONObject parameter = new JSONObject();
+                parameter.put("state", msg );
+                parameter.put("incomingNumber", incomingNumber);
+			if (incomingNumber != "") {
+				parameter.put("incomingCall", "true");
+			} else {
+				parameter.put("incomingCall", "false");
+			}
+	           PluginResult result = new PluginResult(PluginResult.Status.OK, parameter);
+        		result.setKeepCallback(true);
+			callbackContext.sendPluginResult(result);
 
-        PluginResult result = new PluginResult(PluginResult.Status.OK, msg);
-        result.setKeepCallback(true);
 
-        callbackContext.sendPluginResult(result);
+            } catch (JSONException e) {
+                
+            }
+	  
+
     }
 }
